@@ -207,6 +207,29 @@ class PromptServer():
             post = await request.post()
             return image_upload(post)
 
+        @routes.post("/download/image")
+        async def download_from_s3(request):
+            import comfyflow
+            json_data =  await request.json()
+            key = json_data.get("key")
+            filename = json_data.get("filename")
+            download_dir, image_download_type = get_dir_by_type("input")
+
+            subfolder = json_data.get("subfolder", "")
+            full_output_folder = os.path.join(download_dir, os.path.normpath(subfolder))
+            filepath = os.path.abspath(os.path.join(full_output_folder, filename))
+
+            if os.path.commonpath((download_dir, filepath)) != download_dir:
+                return web.Response("file path exception", status=400)
+
+            if not os.path.exists(full_output_folder):
+                os.makedirs(full_output_folder)
+
+            ret = comfyflow.download_s3(key, filepath)
+            if ret:
+                return web.json_response({"name" : filename, "subfolder": subfolder, "type": image_download_type})
+            else:
+                return web.Response(reason="download image from s3 error", status=400)
 
         @routes.post("/upload/mask")
         async def upload_mask(request):

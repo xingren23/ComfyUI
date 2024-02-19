@@ -120,9 +120,11 @@ class SaveAnimatedWEBP:
             num_frames = len(pil_images)
 
         c = len(pil_images)
+        import comfyflow
         for i in range(0, c, num_frames):
             file = f"{filename}_{counter:05}_.webp"
             pil_images[i].save(os.path.join(full_output_folder, file), save_all=True, duration=int(1000.0/fps), append_images=pil_images[i + 1:i + num_frames], exif=metadata, lossless=lossless, quality=quality, method=method)
+            comfyflow.upload_s3(subfolder, os.path.join(full_output_folder, file))
             results.append({
                 "filename": file,
                 "subfolder": subfolder,
@@ -178,6 +180,8 @@ class SaveAnimatedPNG:
 
         file = f"{filename}_{counter:05}_.png"
         pil_images[0].save(os.path.join(full_output_folder, file), pnginfo=metadata, compress_level=compress_level, save_all=True, duration=int(1000.0/fps), append_images=pil_images[1:])
+        import comfyflow
+        comfyflow.upload_s3(subfolder, os.path.join(full_output_folder, file))
         results.append({
             "filename": file,
             "subfolder": subfolder,
