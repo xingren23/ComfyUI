@@ -1,4 +1,4 @@
-ARG BASE_IMAGE="python:3.11-slim-bookworm"
+ARG BASE_IMAGE="ubuntu:22.04"
 
 FROM ${BASE_IMAGE}
 
@@ -21,6 +21,9 @@ RUN \
 	set -eux; \
 		apt-get update; \
 		apt-get install -y --no-install-recommends \
+			python3.10 \
+			python3-pip \
+			python3-venv \
 			git \
 			wget \
 			git-lfs \
@@ -60,7 +63,9 @@ COPY --chown=${USER_UID}:${USER_GID} requirements.txt .
 RUN --mount=type=cache,target=/cache/,uid=${USER_UID},gid=${USER_GID} \
 	pip install -r requirements.txt
 
+
 COPY --chown=${USER_UID}:${USER_GID} . .
+RUN pip install -r custom_nodes/requirements_custom_nodes.txt
 
 # default environment variables
 ENV COMFYUI_ADDRESS=0.0.0.0
