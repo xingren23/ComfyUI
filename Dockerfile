@@ -1,5 +1,6 @@
+ARG BASE_IMAGE="python:3.11-slim-bookworm"
 
-FROM runpod/base:0.6.2-cuda12.1.0
+FROM ${BASE_IMAGE}
 
 ARG PYTORCH_INSTALL_ARGS=""
 ARG EXTRA_ARGS=""
@@ -20,8 +21,6 @@ RUN \
 	set -eux; \
 		apt-get update; \
 		apt-get install -y --no-install-recommends \
-    	python3-pip \			
-			python3-venv \
 			git \
 			wget \
 			git-lfs \
