@@ -1924,16 +1924,18 @@ def load_custom_nodes():
             time_before = time.perf_counter()
             success = load_custom_node(module_path, base_node_names)
             node_import_times.append((time.perf_counter() - time_before, module_path, success))
-
+        
     if len(node_import_times) > 0:
         print("\nImport times for custom nodes:")
+        total_time = 0
         for n in sorted(node_import_times):
             if n[2]:
                 import_message = ""
             else:
                 import_message = " (IMPORT FAILED)"
             print("{:6.1f} seconds{}:".format(n[0], import_message), n[1])
-        print()
+            total_time += n[0]
+        print("Total import time: {:.1f} seconds".format(total_time))
 
 def init_custom_nodes():
     extras_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "comfy_extras")

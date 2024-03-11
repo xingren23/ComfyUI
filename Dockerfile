@@ -27,7 +27,10 @@ RUN \
 			git \
 			wget \
 			git-lfs \
- 			rsync
+ 			rsync \
+			ffmpeg \
+			libsm6 \
+			libxext6
 
 # Clean up to reduce image size
 RUN apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/*
